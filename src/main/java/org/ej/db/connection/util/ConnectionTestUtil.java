@@ -19,10 +19,12 @@
 package org.ej.db.connection.util;
 
 import java.sql.Connection;
-import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.ej.db.connection.ConnectionInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ej.park
@@ -30,6 +32,7 @@ import org.ej.db.connection.ConnectionInfo;
  */
 public class ConnectionTestUtil {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionTestUtil.class);
 	/**
 	 * testConnection
 	 *
@@ -50,14 +53,20 @@ public class ConnectionTestUtil {
 	public static ConnectionResult testConnection(ConnectionInfo connectionInfo, int timeout) {
 		ConnectionResult result = new ConnectionResult();
 		try {
-			Driver driver = (Driver) Class.forName(connectionInfo.getDatabaseName()).newInstance();
-			Connection connection = driver.connect(connectionInfo.getJdbcUrl(), connectionInfo.getOptions());
+			LOGGER.debug("DriverClassName:{}", connectionInfo.getDriverClassName());
+			Class.forName(connectionInfo.getDriverClassName());
+			LOGGER.debug("JdbcUrl:{}", connectionInfo.getJdbcUrl());
+			LOGGER.debug("Options:{}", connectionInfo.getOptions());
+			Connection connection = DriverManager.getConnection(connectionInfo.getJdbcUrl(), connectionInfo.getUsername(), connectionInfo.getPassword());
+			LOGGER.debug("timeout:{}", timeout);
 			if (connection.isValid(timeout)) {
 				result.setValid(true);
 			} else {
 				result.setValid(false);
 			}
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
+			LOGGER.debug("result:{}", result.isValid());
+		} catch (ClassNotFoundException | SQLException e) {
+			LOGGER.error("error:{}", e.getMessage());
 			result.setValid(false);
 			result.setException(e);
 		}
