@@ -23,11 +23,16 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author ej.park
  *
  */
 public class PingTest implements Runnable {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(PingTest.class);
 
 	/** PING_RESULT */
 	public enum PING_RESULT {
@@ -40,7 +45,7 @@ public class PingTest implements Runnable {
 
 	private String host;
 	private int port;
-	private int maxWait;
+	private long maxWait;
 	private PING_RESULT result;
 
 	/**
@@ -48,7 +53,7 @@ public class PingTest implements Runnable {
 	 * @param port
 	 * @param maxWait
 	 */
-	private PingTest(String host, int port, int maxWait) {
+	private PingTest(String host, int port, long maxWait) {
 		this.host = host;
 		this.port = port;
 		this.maxWait = maxWait;
@@ -59,8 +64,11 @@ public class PingTest implements Runnable {
 	public void run() {
 		Socket socket = null;
 		try {
+			LOGGER.debug("host:{}", host);
 			InetAddress inetAddress = InetAddress.getByName(host);
-			if (inetAddress.isReachable(maxWait)) {
+			LOGGER.debug("maxWait:{}", maxWait);
+			if (inetAddress.isReachable((int)maxWait)) {
+				LOGGER.debug("port:{}", port);
 				socket = new Socket(inetAddress, port);
 				if(socket.isConnected()) {
 					result = PING_RESULT.SUCCESS;
@@ -71,8 +79,10 @@ public class PingTest implements Runnable {
 				result = PING_RESULT.HOST_NOT_FOUND;
 			}
 		} catch (UnknownHostException e) {
+			LOGGER.error("UnknownHostException:{}", e.getMessage());
 			result = PING_RESULT.HOST_NOT_FOUND;
 		} catch (IOException e) {
+			LOGGER.error("IOException:{}", e.getMessage());
 			result = PING_RESULT.NOT_CONNECTED;
 		} finally {
 			if(socket!=null) {
@@ -93,7 +103,7 @@ public class PingTest implements Runnable {
 	 * @param maxWait
 	 * @return PING_RESULT
 	 */
-	public static PING_RESULT ping(String host, int port, int maxWait) {
+	public static PING_RESULT ping(String host, int port, long maxWait) {
 		PingTest pingTest = new PingTest(host, port, maxWait);
 		
 		Thread ping = new Thread(pingTest);

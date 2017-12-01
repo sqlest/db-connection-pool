@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.ej.db.connection.pool.ConnectionFailException;
 import org.ej.db.connection.pool.ConnectionPoolFactory;
 import org.ej.db.connection.pool.IConnectionPool;
 
@@ -63,7 +64,7 @@ public class Connections {
 	 */
 	public static Connection getConnection(String connectionId) {
 		if(!connectionPoolMap.containsKey(connectionId)) {
-			throw new RuntimeException("Connection is not set.");
+			throw new ConnectionFailException("Connection is not set.");
 		}
 		return connectionPoolMap.get(connectionId).getConnection();
 	}
