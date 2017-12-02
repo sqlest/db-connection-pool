@@ -333,7 +333,9 @@ public class ConnectionInfo {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("[");
-		sb.append("host=");
+		sb.append("dbmsType=");
+		sb.append(this.dbmsType);
+		sb.append(", host=");
 		sb.append(this.host);
 		sb.append(", port=");
 		sb.append(this.port);
@@ -341,10 +343,24 @@ public class ConnectionInfo {
 		sb.append(this.connectType);
 		sb.append(", databaseName=");
 		sb.append(this.databaseName);
-		sb.append(", user=");
+		sb.append(", username=");
 		sb.append(this.username);
 		sb.append(", password=");
 		sb.append(this.password);
+		sb.append(", isAutoCommit=");
+		sb.append(this.isAutoCommit);
+		sb.append(", maxPoolSize=");
+		sb.append(this.maxPoolSize);
+		sb.append(", minIdle=");
+		sb.append(this.minIdle);
+		sb.append(", connectionTimeout=");
+		sb.append(this.connectionTimeout);
+		sb.append(", validationTimeout=");
+		sb.append(this.validationTimeout);
+		sb.append(", testWhileIdle=");
+		sb.append(this.testWhileIdle);
+		sb.append(", timeBetweenEvictionRunsMillis=");
+		sb.append(this.timeBetweenEvictionRunsMillis);
 		sb.append(", jdbcOption=");
 		sb.append(this.jdbcOption);
 		sb.append(", options=");

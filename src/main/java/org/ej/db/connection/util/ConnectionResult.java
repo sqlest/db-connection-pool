@@ -59,4 +59,14 @@ public class ConnectionResult {
 	public Throwable getException() {
 		return this.cause;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("valid:");
+		sb.append(this.valid);
+		sb.append(", cause:");
+		sb.append(this.cause);
+		return sb.toString();
+	}
 }
